@@ -42,15 +42,28 @@ export const routes = [
     },
     {
         method: 'PUT',
-        path: buildRoutePath('/users/:id'),
+        path: buildRoutePath('/tasks/:id'),
         handler: (req, res) => {
             const { id } = req.params
-            const { title, description } = req.body
+            let title, description
+
+            function checkIfPropExists (req, prop) {
+                if (req.body[prop] === null) {
+                    return prop = null
+                } else {
+                    return prop = req.body[prop]
+                }
+            }
+
+            title = checkIfPropExists(req, "title")
+            description = checkIfPropExists(req, "description")
+
             const date = new Date()
 
-            database.update('users', id, {
+            database.update('tasks', id, {
                 title,
-                description
+                description,
+                date
             })
 
             return res.writeHead(204).end()
@@ -58,11 +71,11 @@ export const routes = [
     },
     {
         method: 'DELETE',
-        path: buildRoutePath('/users/:id'),
+        path: buildRoutePath('/tasks/:id'),
         handler: (req, res) => {
             const { id } = req.params
 
-            database.delete('users', id)
+            database.delete('tasks', id)
 
             return res.writeHead(204).end()
         },
