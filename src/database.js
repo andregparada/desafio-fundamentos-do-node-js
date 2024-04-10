@@ -19,6 +19,18 @@ export class Database{
         fs.writeFile(databasePath, JSON.stringify(this.#database))
     }
 
+    insert(table, data) {
+        if (Array.isArray(this.#database[table])) {
+            this.#database[table].push(data)
+        } else {
+            this.#database[table] = [data]
+        }
+
+        this.#persist();
+
+        return data;
+    }
+
     select(table, search) {
         let data = this.#database[table] ?? []
 
@@ -33,21 +45,8 @@ export class Database{
         return data
     }
 
-    insert(table, data) {
-        if (Array.isArray(this.#database[table])) {
-            this.#database[table].push(data)
-        } else {
-            this.#database[table] = [data]
-        }
-
-        this.#persist();
-
-        return data;
-    }
-
     update(table, id, data) {
         const rowIndex = this.#database[table].findIndex(row => row.id === id)
-
 
         if (rowIndex > -1) {
             this.#database[table][rowIndex] = {
@@ -67,6 +66,19 @@ export class Database{
 
         if (rowIndex > -1) {
             this.#database[table].splice(rowIndex, 1)
+            this.#persist()
+        }
+    }
+
+    modify(table, id, date) {
+        const rowIndex = this.#database[table].findIndex(row => row.id === id)
+
+        if (rowIndex > -1) {
+            this.#database[table][rowIndex] = {
+                ...this.#database[table][rowIndex],
+                completed_at: date,
+                updated_at: date,
+            }
             this.#persist()
         }
     }
