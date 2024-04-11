@@ -58,6 +58,8 @@ export class Database{
                 updated_at: data.date
             }
             this.#persist()
+        } else {
+            return false
         }
     }
 

@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import { Database } from './database.js'
 import { buildRoutePath } from './utils/build-route-path.js'
+import { stringify } from 'node:querystring'
 
 const database = new Database
 
@@ -60,13 +61,17 @@ export const routes = [
 
             const date = new Date()
 
-            database.update('tasks', id, {
+            const idIsPresent = database.update('tasks', id, {
                 title,
                 description,
                 date
             })
 
-            return res.writeHead(204).end()
+            if(idIsPresent) {
+                return res.writeHead(204).end()
+            } else {
+                return res.writeHead(404).send('Id não encontrado')
+            }
         },
     },
     { // DELETE
