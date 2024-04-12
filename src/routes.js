@@ -70,7 +70,7 @@ export const routes = [
             if(idIsPresent) {
                 return res.writeHead(204).end()
             } else {
-                return res.writeHead(404).send('Id não encontrado')
+                return res.writeHead(404).end('{Message: "Tarefa não encontrada."}')
             }
         },
     },
@@ -80,9 +80,13 @@ export const routes = [
         handler: (req, res) => {
             const { id } = req.params
 
-            database.delete('tasks', id)
+            const idIsPresent = database.delete('tasks', id)
 
-            return res.writeHead(204).end()
+            if(idIsPresent) {
+                return res.writeHead(204).end()
+            } else {
+                return res.writeHead(404).end('{Message: "Tarefa não encontrada."}')
+            }
         },
     },
     { // PATCH
@@ -93,9 +97,13 @@ export const routes = [
 
             const date = new Date()
 
-            database.modify('tasks', id, date)
+            const idIsPresent = database.modify('tasks', id, date)
 
-            return res.writeHead(204).end()
+            if(idIsPresent) {
+                return res.writeHead(204).end()
+            } else {
+                return res.writeHead(404).end('{Message: "Tarefa não encontrada."}')
+            }
         },
     }
 ]
